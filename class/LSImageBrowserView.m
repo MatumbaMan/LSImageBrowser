@@ -7,7 +7,7 @@
 //
 
 #import "LSImageBrowserView.h"
-#import "ImageBrowserConfig.h"
+#import "LSImageBrowserConfig.h"
 #import "LSImageIndicatorView.h"
 
 @interface LSImageBrowserView () <UIScrollViewDelegate>

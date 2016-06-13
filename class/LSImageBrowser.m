@@ -8,7 +8,7 @@
 
 #import "LSImageBrowser.h"
 #import "LSImageBrowserView.h"
-#import "ImageBrowserConfig.h"
+#import "LSImageBrowserConfig.h"
 
 #import "UINavigationController+AutoRotate.h"
 
@@ -87,7 +87,7 @@
     self.mainScrollView.center = CGPointMake(mainBackgroundWidth * 0.5, mainCenterY);
     self.mainScrollView.contentSize = CGSizeMake(self.imageCount * mainWidth, mainHeight);
     self.mainScrollView.contentOffset = CGPointMake(self.currentImageIndex * self.mainScrollView.frame.size.width, 0);
-    [self.mainScrollView.subviews enumerateObjectsUsingBlock:^(ImageBrowserView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.mainScrollView.subviews enumerateObjectsUsingBlock:^(LSImageBrowserView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat x = kImageBrowserImageViewMargin + idx * mainWidth;
         obj.frame = CGRectMake(x, 0, mainWidth - kImageBrowserImageViewMargin * 2, mainHeight);
     }];
