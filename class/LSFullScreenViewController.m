@@ -44,9 +44,7 @@
         _scrollview.frame = self.view.frame;
         _scrollview.delegate = self;
         _scrollview.clipsToBounds = YES;
-//        _scrollview.showsHorizontalScrollIndicator = NO;
-//        _scrollview.showsVerticalScrollIndicator = NO;
-        _scrollview.backgroundColor = [UIColor blackColor];
+        _scrollview.backgroundColor = [UIColor orangeColor];
         [_scrollview setUserInteractionEnabled:YES];
         [_scrollview setMultipleTouchEnabled:YES];
         [_scrollview addSubview:self.imageview];
@@ -119,7 +117,6 @@
             target.size.height = target.size.height*ratio;
             target.size.width = target.size.width*ratio;
         }
-        
     }
     
     if (target.size.width > source.size.width) {
@@ -148,21 +145,22 @@
         
         CGFloat radius = atan2f(self.scrollview.transform.b, self.scrollview.transform.a);
         CGFloat degree = radius * (180 / M_PI);
-        if (abs(((int)degree + 1) / 90) % 2 == 0) {
+        BOOL rotate = abs(((int)degree + 1) / 90) % 2 != 0;
+        if (rotate) {
             
             imageFrame.size.height = imageFrame.size.height*ratio;
             imageFrame.size.width = frame.size.width;
-            imageFrame = [self tranferFrame:imageFrame source:frame rotate:NO];
         } else {
             imageFrame.size.width = imageFrame.size.height*ratio;
             imageFrame.size.height = frame.size.width;
-            imageFrame = [self tranferFrame:imageFrame source:frame rotate:YES];
         }
         
+        imageFrame = [self tranferFrame:imageFrame source:frame rotate:rotate];
         self.imageview.frame = imageFrame;
         self.scrollview.contentSize = imageFrame.size;
-        self.imageview.center = [self centerOfScrollViewContent:self.scrollview];
         
+        CGPoint center = [self centerOfScrollViewContent:self.scrollview];
+        self.imageview.center = center;
         
         CGFloat maxScale = frame.size.height/imageFrame.size.height;
         maxScale = frame.size.width/imageFrame.size.width>maxScale?frame.size.width/imageFrame.size.width:maxScale;
@@ -177,8 +175,6 @@
         self.scrollview.contentSize = self.imageview.frame.size;
     }
     self.scrollview.contentOffset = CGPointZero;
-    
-    NSLog(@"%f,%f,%f,%f",self.imageView.frame.origin.x, self.imageView.frame.origin.y, self.imageView.frame.size.width, self.imageView.frame.size.height);
 }
 
 - (CGPoint)centerOfScrollViewContent:(UIScrollView *)scrollView
