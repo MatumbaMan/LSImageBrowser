@@ -35,8 +35,8 @@
 - (void)browser {
     LSImageBrowser * ib = [LSImageBrowser new];
     [ib setDelegate:self];
-    [ib setImageCount:5];
-    [ib setCurrentImageIndex:1];
+    [ib setImageCount:10];
+    [ib setCurrentImageIndex:10];
     [ib showInViewController:self];
 }
 
@@ -53,11 +53,11 @@
 }
 
 - (UIImage *)imageBrowser:(LSImageBrowser *)viewController thumbnailImageForIndex:(NSInteger)index {
-    return [UIImage imageNamed:@"Icon"];
+    return [UIImage imageNamed:@"test"];
 }
 
 - (UIImage *)imageBrowser:(LSImageBrowser *)viewController placeImageForIndex:(NSInteger)index {
-    return [UIImage imageNamed:@"Icon"];
+    return [UIImage imageNamed:@"test"];
 }
 
 - (NSString *)imageBrowser:(LSImageBrowser *)viewController nameForIndex:(NSInteger)index {

@@ -22,6 +22,9 @@
 		D10CC16F1CC60946003F2192 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10CC16D1CC60946003F2192 /* Main.storyboard */; };
 		D10CC1711CC60946003F2192 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10CC1701CC60946003F2192 /* Assets.xcassets */; };
 		D10CC1741CC60946003F2192 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10CC1721CC60946003F2192 /* LaunchScreen.storyboard */; };
+		D1FC56AE1D0FC36E00BD82E2 /* LSFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */; };
+		D1FC56B01D0FE9CD00BD82E2 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = D1FC56AF1D0FE9CD00BD82E2 /* test.png */; };
+		D1FC56B31D0FFF2700BD82E2 /* LSFullScreenViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +52,11 @@
 		D10CC1701CC60946003F2192 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D10CC1731CC60946003F2192 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D10CC1751CC60946003F2192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D1FC56AC1D0FC36E00BD82E2 /* LSFullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSFullScreenViewController.h; sourceTree = "<group>"; };
+		D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSFullScreenViewController.m; sourceTree = "<group>"; };
+		D1FC56AF1D0FE9CD00BD82E2 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
+		D1FC56B11D0FFF2700BD82E2 /* LSFullScreenViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSFullScreenViewController2.h; sourceTree = "<group>"; };
+		D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSFullScreenViewController2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +73,7 @@
 		D10C23831D0E8C1100E89F49 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				D1FC56AF1D0FE9CD00BD82E2 /* test.png */,
 				D10C23841D0E8C1100E89F49 /* enlarge.png */,
 				D10C23851D0E8C1100E89F49 /* Icon.png */,
 				D10C23861D0E8C1100E89F49 /* narrow.png */,
@@ -124,6 +133,10 @@
 				D10C23781D0E8C0400E89F49 /* LSImageBrowserConfig.h */,
 				D10C23791D0E8C0400E89F49 /* LSImageBrowserView.h */,
 				D10C237A1D0E8C0400E89F49 /* LSImageBrowserView.m */,
+				D1FC56AC1D0FC36E00BD82E2 /* LSFullScreenViewController.h */,
+				D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */,
+				D1FC56B11D0FFF2700BD82E2 /* LSFullScreenViewController2.h */,
+				D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */,
 				D10C237B1D0E8C0400E89F49 /* LSImageIndicatorView.h */,
 				D10C237C1D0E8C0400E89F49 /* LSImageIndicatorView.m */,
 				D10C237D1D0E8C0400E89F49 /* UINavigationController+AutoRotate.h */,
@@ -193,6 +206,7 @@
 			files = (
 				D10C23891D0E8C1100E89F49 /* enlarge.png in Resources */,
 				D10CC1741CC60946003F2192 /* LaunchScreen.storyboard in Resources */,
+				D1FC56B01D0FE9CD00BD82E2 /* test.png in Resources */,
 				D10C238A1D0E8C1100E89F49 /* Icon.png in Resources */,
 				D10CC1711CC60946003F2192 /* Assets.xcassets in Resources */,
 				D10C238B1D0E8C1100E89F49 /* narrow.png in Resources */,
@@ -209,12 +223,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1FC56AE1D0FC36E00BD82E2 /* LSFullScreenViewController.m in Sources */,
 				D10C23811D0E8C0400E89F49 /* LSImageIndicatorView.m in Sources */,
 				D10CC16C1CC60946003F2192 /* ViewController.m in Sources */,
 				D10C23801D0E8C0400E89F49 /* LSImageBrowserView.m in Sources */,
 				D10CC1691CC60946003F2192 /* AppDelegate.m in Sources */,
 				D10C237F1D0E8C0400E89F49 /* LSImageBrowser.m in Sources */,
 				D10C23821D0E8C0400E89F49 /* UINavigationController+AutoRotate.m in Sources */,
+				D1FC56B31D0FFF2700BD82E2 /* LSFullScreenViewController2.m in Sources */,
 				D10CC1661CC60946003F2192 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

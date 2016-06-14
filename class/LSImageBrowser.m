@@ -10,14 +10,23 @@
 #import "LSImageBrowserView.h"
 #import "LSImageBrowserConfig.h"
 
+#import "LSFullScreenViewController.h"
 #import "UINavigationController+AutoRotate.h"
 
-@interface LSImageBrowser () <UIScrollViewDelegate>
+@interface LSImageBrowser () <UIScrollViewDelegate> {
+    BOOL _saving;
+}
 
 @property (nonatomic, strong) UIScrollView *    mainScrollView;
 @property (nonatomic, strong) UILabel *         infoLabel;
 @property (nonatomic, strong) UIView *          toolView;
 @property (nonatomic, strong) UIScrollView *    previewScrollView;
+
+@property (nonatomic,assign) BOOL hasShowImageBrowser;
+
+@property (nonatomic, weak) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, copy)   NSString *        albumName;
+@property (nonatomic, strong) NSMutableArray *  savePhotoList;
 
 @end
 
@@ -36,23 +45,65 @@
 #pragma mark navigationbar style
 - (void)initNavigationBar {
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.navigationItem.title = @"查看图片";
     
     [self.navigationController.navigationBar setBarTintColor:kNavigationTintColor];
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, [UIFont boldSystemFontOfSize:18], NSFontAttributeName, nil]];
 
-    UIBarButtonItem *backItem = [[UIBarButtonItem alloc]initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(back)];
-    self.navigationItem.leftBarButtonItem = backItem;
+    // 3.关闭按钮
+    UIButton *hideButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+    [hideButton setTitle:@"返回" forState:UIControlStateNormal];
+    [hideButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [hideButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+    hideButton.clipsToBounds = YES;
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:hideButton];
+    
+    
+    // 2.保存按钮
+    UIButton *saveButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+    [saveButton setTitle:@"保存" forState:UIControlStateNormal];
+    [saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [saveButton addTarget:self action:@selector(saveImage) forControlEvents:UIControlEventTouchUpInside];
+    saveButton.clipsToBounds = YES;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:saveButton];
 }
 
 - (void)back {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark 保存图像
+- (void)saveImage {
+    
+    if (_saving) {
+        return;
+    }
+    _saving = YES;
+    
+    int index = self.mainScrollView.contentOffset.x / self.mainScrollView.bounds.size.width;
+    
+    LSImageBrowserView *currentView = self.mainScrollView.subviews[index];
+    
+    if ([self.savePhotoList containsObject:currentView.imageview.image]) {
+        return;
+    }
+    
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] init];
+    indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    indicator.center = self.view.center;
+    _indicatorView = indicator;
+    [[UIApplication sharedApplication].keyWindow addSubview:indicator];
+    [indicator startAnimating];
+}
+
 //show action
 - (void)showInViewController:(UIViewController *)viewController {
     UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:self];
-    [viewController presentViewController:nav animated:NO completion:nil];
+    nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [viewController presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark addSubviews
@@ -61,6 +112,7 @@
     
     self.view.backgroundColor = kImageBrowserBackgrounColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
+    self.currentImageIndex = MIN(self.currentImageIndex, self.imageCount - 1);
     [self addSubView];
 }
 
@@ -112,7 +164,7 @@
         }
         
     }];
-    [self changePreviewOffsetAtIndex];
+    [self changePreviewOffset];
 }
 
 - (void)addSubView {
@@ -123,15 +175,15 @@
     
     self.mainScrollView.layer.borderColor = [UIColor greenColor].CGColor;
     self.mainScrollView.layer.borderWidth = 2.0f;
-    self.mainScrollView.backgroundColor = [UIColor orangeColor];
+    self.mainScrollView.backgroundColor = [UIColor blackColor];
 
     self.infoLabel.backgroundColor = [UIColor lightGrayColor];
     
-    self.previewScrollView.layer.borderColor = [UIColor blueColor].CGColor;
-    self.previewScrollView.layer.borderWidth = 2.0f;
-    self.previewScrollView.backgroundColor = [UIColor yellowColor];
+//    self.previewScrollView.layer.borderColor = [UIColor blueColor].CGColor;
+//    self.previewScrollView.layer.borderWidth = 2.0f;
+    self.previewScrollView.backgroundColor = [UIColor colorWithRed:73/255.0 green:81/255.0 blue:91/255.0 alpha:1.0f];
     
-    self.toolView.backgroundColor = [UIColor redColor];
+    self.toolView.backgroundColor = [UIColor colorWithRed:73/255.0 green:81/255.0 blue:91/255.0 alpha:1.0f];
 }
 
 - (UIScrollView *)mainScrollView {
@@ -144,9 +196,17 @@
         _mainScrollView.hidden = NO;
         
         for (int i = 0; i < self.imageCount; i++) {
-            LSImageBrowserView * imageView = [[LSImageBrowserView alloc]init];
-            imageView.tag = i;
-            [_mainScrollView addSubview:imageView];
+            LSImageBrowserView * view = [[LSImageBrowserView alloc]init];
+            view.tag = i;
+            
+            //处理单击
+            __weak __typeof(self)weakSelf = self;
+            view.singleTapBlock = ^(UITapGestureRecognizer *recognizer){
+                __strong __typeof(weakSelf)strongSelf = weakSelf;
+                [strongSelf fullScreenShow:recognizer];
+            };
+            
+            [_mainScrollView addSubview:view];
         }
         [self setupImageOfImageViewForIndex:self.currentImageIndex];
         [self setIndex:self.currentImageIndex];
@@ -181,6 +241,10 @@
         [narrow setBackgroundImage:[UIImage imageNamed:@"narrow"] forState:UIControlStateNormal];
         [narrow addTarget:self action:@selector(narrow) forControlEvents:UIControlEventTouchUpInside];
         [container addSubview:narrow];
+        
+        UILabel * line = [[UILabel alloc]initWithFrame:CGRectMake(0, kToolviewHeight - 2, (kToolviewHeight + kToolviewMargin) * 4, 2)];
+        line.backgroundColor = [UIColor colorWithRed:80/255.0 green:87/255.0 blue:96/255.0 alpha:1.0f];;
+        [container addSubview:line];
     }
     return _toolView;
 }
@@ -202,11 +266,11 @@
             imageView.layer.borderWidth = 2.f;
             [_previewScrollView addSubview:imageView];
             
-            UILabel * index = [[UILabel alloc]initWithFrame:CGRectMake(2, 2, 10, 10)];
+            UILabel * index = [[UILabel alloc]initWithFrame:CGRectMake(2, 2, 15, 12)];
             index.numberOfLines = 1;
             index.text = [NSString stringWithFormat:@"%zi", i + 1];
             index.layer.backgroundColor = [UIColor blackColor].CGColor;
-            index.layer.cornerRadius = 5;
+            index.layer.cornerRadius = 6;
             index.textColor = [UIColor whiteColor];
             index.font = [UIFont systemFontOfSize:9];
             index.textAlignment = NSTextAlignmentCenter;
@@ -217,8 +281,6 @@
         }
         
         [self setupIndexOfPreviewViewForIndex:self.currentImageIndex];
-        
-        
     }
     return _previewScrollView;
 }
@@ -236,7 +298,8 @@
 #pragma mark 重置各控件frame（处理屏幕旋转）
 - (void)setIndex:(NSInteger)index {
     self.currentImageIndex = index;
-    [self.navigationItem setTitle:[NSString stringWithFormat:@"查看图片(%zi/%zi)", index + 1, self.imageCount]];
+    self.infoLabel.text = [self nameAtIndex:index];
+//    [self.navigationItem setTitle:[NSString stringWithFormat:@"查看图片(%zi/%zi)", index + 1, self.imageCount]];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -346,15 +409,29 @@
     [view narrow];
 }
 
+- (void)fullScreenShow:(UITapGestureRecognizer *)recognizer {
+    LSFullScreenViewController * fullscreen = [LSFullScreenViewController new];
+
+    fullscreen.sourceView = self.mainScrollView;
+    NSString * imagePath = [self highQualityImageURLAtIndex:self.currentImageIndex];
+    if (imagePath) {
+        if ([[NSFileManager defaultManager]fileExistsAtPath:imagePath]) {
+            fullscreen.image = [UIImage imageWithContentsOfFile:imagePath];
+        } else {
+            fullscreen.image = [self placeholderImageAtIndex:self.currentImageIndex];
+        }
+    } else {
+        fullscreen.image = [self placeholderImageAtIndex:self.currentImageIndex];
+    }
+
+    [self presentViewController:fullscreen animated:NO completion:nil];
+}
+
 #pragma mark scrollview
-#pragma mark - scrollview代理方法
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     if ([scrollView isEqual:self.mainScrollView]) {
-        int index = (scrollView.contentOffset.x + self.mainScrollView.bounds.size.width * 0.5) / self.mainScrollView.bounds.size.width;
-
-        self.infoLabel.text = [self nameAtIndex:index];
-        [self setIndex:index];
+        int index = self.mainScrollView.contentOffset.x  / self.mainScrollView.bounds.size.width;
         
         long left = index - 2;
         long right = index + 2;
@@ -372,7 +449,9 @@
     
     if ([scrollView isEqual:self.mainScrollView]) {
         int autualIndex = self.mainScrollView.contentOffset.x  / self.mainScrollView.bounds.size.width;
-        [self changePreviewOffsetAtIndex];
+        
+        [self setIndex:autualIndex];
+        [self changePreviewOffset];
         
         //将不是当前imageview的缩放全部还原 (这个方法有些冗余，后期可以改进)
         for (LSImageBrowserView *view in self.mainScrollView.subviews) {
@@ -382,17 +461,11 @@
             view.transform = CGAffineTransformMakeRotation(0);
         }
         
-        for (UIImageView *view in self.previewScrollView.subviews) {
-            if (view.tag != autualIndex) {
-                view.layer.borderColor = [UIColor lightGrayColor].CGColor;
-            } else {
-                view.layer.borderColor = [UIColor blueColor].CGColor;
-            }
-        }
+        [self changePreviewSelect];
     }
 }
 
-- (void)changePreviewOffsetAtIndex {
+- (void)changePreviewOffset {
     
     if (UIInterfaceOrientationPortrait == [self getCurrentOrientation]) {
         CGFloat maxWidth = self.previewScrollView.contentSize.width;
@@ -416,19 +489,24 @@
         
         [self.previewScrollView setContentOffset:CGPointMake(0, MAX(offset, 0)) animated:YES];
     }
+    [self changePreviewSelect];
 }
 
 - (void)previewTap:(UITapGestureRecognizer *)tap {
-    self.currentImageIndex = tap.view.tag;
-    [self changePreviewOffsetAtIndex];
+    [self setIndex:tap.view.tag];
+    [self changePreviewOffset];
     
     [self.mainScrollView setContentOffset:CGPointMake(self.currentImageIndex * self.mainScrollView.frame.size.width, 0) animated:YES];
     
+    [self changePreviewSelect];
+}
+
+- (void)changePreviewSelect {
     for (UIImageView * view in self.previewScrollView.subviews) {
         if (view.tag != self.currentImageIndex) {
-            view.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            view.layer.borderColor = [UIColor whiteColor].CGColor;
         } else {
-            view.layer.borderColor = [UIColor blueColor].CGColor;
+            view.layer.borderColor = kNavigationTintColor.CGColor;
         }
     }
 }

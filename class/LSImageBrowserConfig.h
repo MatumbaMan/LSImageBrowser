@@ -24,9 +24,9 @@
 #define kPreviewImageViewMarginHorizontal    5
 
 #define kPreviewWidth       100
-#define kPreviewHeight      60
+#define kPreviewHeight      75
 
-#define kToolviewHeight     40
+#define kToolviewHeight     50
 #define kToolviewMargin     10
 
 //是否支持横屏

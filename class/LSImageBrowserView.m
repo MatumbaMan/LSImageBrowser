@@ -12,6 +12,9 @@
 
 @interface LSImageBrowserView () <UIScrollViewDelegate>
 
+@property (nonatomic,strong) UITapGestureRecognizer *doubleTap;
+@property (nonatomic,strong) UITapGestureRecognizer *singleTap;
+
 @property (nonatomic, weak) LSImageIndicatorView  *indicatorView;
 @property (nonatomic, assign) BOOL hasLoadedImage;//图片下载成功为YES 否则为NO
 
@@ -23,8 +26,61 @@
 {
     if (self = [super initWithFrame:frame]) {
         [self addSubview:self.scrollview];
+        //添加单双击事件
+        [self addGestureRecognizer:self.doubleTap];
+        [self addGestureRecognizer:self.singleTap];
     }
     return self;
+}
+
+#pragma mark 双击
+- (UITapGestureRecognizer *)doubleTap
+{
+    if (!_doubleTap) {
+        _doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+        _doubleTap.numberOfTapsRequired = 2;
+        _doubleTap.numberOfTouchesRequired  =1;
+    }
+    return _doubleTap;
+}
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
+{
+    //图片加载完之后才能响应双击放大
+    if (!self.hasLoadedImage) {
+        return;
+    }
+    CGPoint touchPoint = [recognizer locationInView:self];
+    if (self.scrollview.zoomScale <= 1.0) {
+        
+        CGFloat scaleX = touchPoint.x + self.scrollview.contentOffset.x;//需要放大的图片的X点
+        CGFloat sacleY = touchPoint.y + self.scrollview.contentOffset.y;//需要放大的图片的Y点
+        [self.scrollview zoomToRect:CGRectMake(scaleX, sacleY, 10, 10) animated:YES];
+        
+    } else {
+        [self.scrollview setZoomScale:1.0 animated:YES]; //还原
+    }
+    
+}
+
+- (UITapGestureRecognizer *)singleTap
+{
+    if (!_singleTap) {
+        _singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+        _singleTap.numberOfTapsRequired = 1;
+        _singleTap.numberOfTouchesRequired = 1;
+        //只能有一个手势存在
+        [_singleTap requireGestureRecognizerToFail:self.doubleTap];
+        
+    }
+    return _singleTap;
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer
+{
+    if (self.singleTapBlock) {
+        self.singleTapBlock(recognizer);
+    }
 }
 
 - (UIScrollView *)scrollview
@@ -70,8 +126,9 @@
         return;
     }
     
-    self.hasLoadedImage = YES;
     //下载
+    self.hasLoadedImage = YES;
+    [self.indicatorView removeFromSuperview];
 }
 
 - (void)layoutSubviews
