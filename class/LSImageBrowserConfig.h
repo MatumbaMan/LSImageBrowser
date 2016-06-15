@@ -29,6 +29,8 @@
 #define kToolviewHeight     50
 #define kToolviewMargin     10
 
+#define kInfoLableHeight    30
+
 //是否支持横屏
 #define kIsSupportLandscape YES
 

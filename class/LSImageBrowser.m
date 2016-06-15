@@ -125,7 +125,7 @@
     CGFloat mainBackgroundHeight = isPortrait ? viewHeight - kPreviewHeight - kToolviewHeight : viewHeight - kToolviewHeight;
     CGFloat mainBackgroundWidth = isPortrait ? kAppScreenWidth : kAppScreenWidth - kPreviewWidth;
     
-    CGFloat mainHeight = mainBackgroundHeight - kImageBrowserMarginVertical(isPortrait) * 2 - 30;
+    CGFloat mainHeight = mainBackgroundHeight - kImageBrowserMarginVertical(isPortrait) * 2 - kInfoLableHeight;
     CGFloat mainWidth = mainBackgroundWidth - kImageBrowserMarginHorizontal(isPortrait) * 2 ;
     
     CGFloat previewX = isPortrait ? 0 : mainBackgroundWidth;
@@ -144,7 +144,7 @@
         obj.frame = CGRectMake(x, 0, mainWidth - kImageBrowserImageViewMargin * 2, mainHeight);
     }];
     
-    self.infoLabel.frame = CGRectMake((mainBackgroundWidth - mainWidth) * 0.5, mainCenterY + mainHeight * 0.5, mainWidth, 30);
+    self.infoLabel.frame = CGRectMake((mainBackgroundWidth - mainWidth) * 0.5, mainCenterY + mainHeight * 0.5, mainWidth, kInfoLableHeight);
     
     self.toolView.frame = CGRectMake(0, mainBackgroundHeight, kAppScreenWidth, kToolviewHeight);
     [self.toolView.subviews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL * _Nonnull stop) {
