@@ -44,10 +44,13 @@
         _scrollview.frame = self.view.frame;
         _scrollview.delegate = self;
         _scrollview.clipsToBounds = YES;
-        _scrollview.backgroundColor = [UIColor orangeColor];
+        _scrollview.backgroundColor = [UIColor blackColor];
         [_scrollview setUserInteractionEnabled:YES];
         [_scrollview setMultipleTouchEnabled:YES];
         [_scrollview addSubview:self.imageview];
+        
+//        _scrollview.layer.borderColor = [UIColor greenColor].CGColor;
+//        _scrollview.layer.borderWidth = 2.0f;
         
         // 旋转手势
         UIRotationGestureRecognizer *rotationGestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(rotateView:)];
@@ -68,7 +71,8 @@
         [_imageView setMultipleTouchEnabled:YES];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
         
-        
+//        _imageView.layer.borderColor = [UIColor blueColor].CGColor;
+//        _imageView.layer.borderWidth = 2.0f;
     }
     return _imageView;
 }
@@ -85,10 +89,17 @@
     if (rotationGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         CGFloat radius = atan2f(view.transform.b, view.transform.a);
         CGFloat degree = radius * (180 / M_PI);
-        int rotate = (int)((degree + 45) / 90) * 90;
+        int rotate = [self handleRotate:degree];
         view.transform = CGAffineTransformMakeRotation(rotate * M_PI / 180.0);
-        
         [self adjustFrames];
+    }
+}
+
+- (int)handleRotate:(CGFloat)degree {
+    if (degree + 45 < 0) {
+        return -((abs((int)degree) + 45) / 90) * 90;
+    } else {
+        return (int)((degree + 45) / 90) * 90;
     }
 }
 
@@ -136,26 +147,45 @@
 - (void)adjustFrames
 {
     self.scrollview.frame = self.view.bounds;
+    self.scrollview.zoomScale = 1.0f;
+    
     CGRect frame = self.view.frame;
     if (self.image) {
         CGSize imageSize = self.imageview.image.size;
         CGRect imageFrame = CGRectMake(0, 0, imageSize.width, imageSize.height);
-
-        CGFloat ratio = frame.size.width/imageFrame.size.width;
         
         CGFloat radius = atan2f(self.scrollview.transform.b, self.scrollview.transform.a);
         CGFloat degree = radius * (180 / M_PI);
-        BOOL rotate = abs(((int)degree + 1) / 90) % 2 != 0;
-        if (rotate) {
-            
-            imageFrame.size.height = imageFrame.size.height*ratio;
-            imageFrame.size.width = frame.size.width;
-        } else {
-            imageFrame.size.width = imageFrame.size.height*ratio;
-            imageFrame.size.height = frame.size.width;
-        }
+        BOOL rotate = ((abs((int)degree) + 1) / 90) % 2 != 0;
         
-        imageFrame = [self tranferFrame:imageFrame source:frame rotate:rotate];
+        if (frame.size.width <= frame.size.height) {
+            
+            if (rotate) {
+                CGFloat ratio = frame.size.width/imageFrame.size.height;
+                imageFrame.size.height = frame.size.width;
+                imageFrame.size.width = imageFrame.size.width*ratio;
+            } else {
+                CGFloat ratio = frame.size.width/imageFrame.size.width;
+                imageFrame.size.height = imageFrame.size.height*ratio;
+                imageFrame.size.width = frame.size.width;
+            }
+            
+        } else {
+            
+            
+            if (rotate) {
+                CGFloat ratio = frame.size.width/imageFrame.size.width;
+                imageFrame.size.height = frame.size.height*ratio;
+                imageFrame.size.width = imageFrame.size.height;
+            } else {
+                CGFloat ratio = frame.size.height/imageFrame.size.height;
+                imageFrame.size.width = imageFrame.size.width*ratio;
+                imageFrame.size.height = frame.size.height;
+            }
+        }
+
+        NSLog(@"%f-%f", imageFrame.size.width, imageFrame.size.height);
+
         self.imageview.frame = imageFrame;
         self.scrollview.contentSize = imageFrame.size;
         
@@ -168,7 +198,6 @@
         
         self.scrollview.minimumZoomScale = kMinZoomScale;
         self.scrollview.maximumZoomScale = maxScale;
-        self.scrollview.zoomScale = 1.0f;
     } else {
         frame.origin = CGPointZero;
         self.imageview.frame = frame;

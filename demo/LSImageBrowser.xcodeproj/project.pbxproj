@@ -24,7 +24,6 @@
 		D10CC1741CC60946003F2192 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10CC1721CC60946003F2192 /* LaunchScreen.storyboard */; };
 		D1FC56AE1D0FC36E00BD82E2 /* LSFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */; };
 		D1FC56B01D0FE9CD00BD82E2 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = D1FC56AF1D0FE9CD00BD82E2 /* test.png */; };
-		D1FC56B31D0FFF2700BD82E2 /* LSFullScreenViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,8 +54,6 @@
 		D1FC56AC1D0FC36E00BD82E2 /* LSFullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSFullScreenViewController.h; sourceTree = "<group>"; };
 		D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSFullScreenViewController.m; sourceTree = "<group>"; };
 		D1FC56AF1D0FE9CD00BD82E2 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
-		D1FC56B11D0FFF2700BD82E2 /* LSFullScreenViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSFullScreenViewController2.h; sourceTree = "<group>"; };
-		D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSFullScreenViewController2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,8 +132,6 @@
 				D10C237A1D0E8C0400E89F49 /* LSImageBrowserView.m */,
 				D1FC56AC1D0FC36E00BD82E2 /* LSFullScreenViewController.h */,
 				D1FC56AD1D0FC36E00BD82E2 /* LSFullScreenViewController.m */,
-				D1FC56B11D0FFF2700BD82E2 /* LSFullScreenViewController2.h */,
-				D1FC56B21D0FFF2700BD82E2 /* LSFullScreenViewController2.m */,
 				D10C237B1D0E8C0400E89F49 /* LSImageIndicatorView.h */,
 				D10C237C1D0E8C0400E89F49 /* LSImageIndicatorView.m */,
 				D10C237D1D0E8C0400E89F49 /* UINavigationController+AutoRotate.h */,
@@ -230,7 +225,6 @@
 				D10CC1691CC60946003F2192 /* AppDelegate.m in Sources */,
 				D10C237F1D0E8C0400E89F49 /* LSImageBrowser.m in Sources */,
 				D10C23821D0E8C0400E89F49 /* UINavigationController+AutoRotate.m in Sources */,
-				D1FC56B31D0FFF2700BD82E2 /* LSFullScreenViewController2.m in Sources */,
 				D10CC1661CC60946003F2192 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
